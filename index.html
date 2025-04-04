@@ -11,7 +11,7 @@
             theme: {
                 extend: {
                     colors: {
-                        ai: {
+                        ai: { // Primary color scheme
                             50: '#f0f9ff',
                             100: '#e0f2fe',
                             200: '#bae6fd',
@@ -23,37 +23,59 @@
                             800: '#075985',
                             900: '#0c4a6e',
                         },
-                        purple: {
-                            100: '#f5f3ff', // Added for category chip consistency
+                        purple: { // For 'Content Creation' category
+                            100: '#f5f3ff',
                             400: '#a78bfa',
                             500: '#8b5cf6',
                             600: '#7c3aed',
-                            800: '#5b21b6'  // Added for category chip consistency
+                            800: '#5b21b6'
                         },
-                        green: { // Added for category chip consistency
+                        green: { // For 'Image Generation' and success states
                             100: '#f0fdf4',
                             500: '#22c55e',
                             600: '#16a34a',
                             800: '#166534'
                         },
-                        yellow: { // Added for category chip consistency
+                        yellow: { // For 'Code Assistance' and favorites
                             100: '#fefce8',
+                            400: '#facc15', // Added for solid favorite star
                             500: '#eab308',
                             600: '#ca8a04',
                             800: '#854d0e'
                         },
-                        red: { // Added for category chip consistency
+                        red: { // For 'Data Analysis' and delete actions
                             100: '#fef2f2',
                             500: '#ef4444',
                             600: '#dc2626',
                             800: '#991b1b'
-                        }
+                        },
+                         blue: { // For potential edit actions or other categories
+                            100: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            800: '#1e40af'
+                         },
+                         gray: { // For 'All Tools' category and general UI
+                            100: '#f3f4f6',
+                            400: '#9ca3af',
+                            500: '#6b7280',
+                            600: '#4b5563',
+                            700: '#374151',
+                            800: '#1f2937',
+                         }
                     },
                     fontFamily: {
-                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'], // Use Inter font
                     },
+                    // Add line-clamp plugin if needed (or handle via JS/CSS)
+                     lineClamp: {
+                         3: '3',
+                     },
                 }
-            }
+            },
+             plugins: [
+                 require('@tailwindcss/line-clamp'), // Requires installing this plugin via npm if using a build process
+             ],
         }
     </script>
     <style>
@@ -61,73 +83,69 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f8fafc; /* Slightly off-white background */
         }
 
+        /* Style for AI Card hover effects */
         .ai-card {
             transition: all 0.2s ease;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-
         .ai-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
         }
 
+        /* Style for Category Chips */
         .category-chip {
             transition: all 0.2s ease;
         }
-
         .category-chip:hover {
             transform: scale(1.05);
         }
 
+        /* Style for Sidebar Items */
         .sidebar-item {
             transition: all 0.2s ease;
         }
-
         .sidebar-item.active,
         .sidebar-item:hover {
-            background-color: rgba(14, 165, 233, 0.1);
+            background-color: rgba(14, 165, 233, 0.1); /* Light AI color background */
             color: #0284c7; /* ai-600 */
             font-weight: 500;
         }
-         .sidebar-item.active i,
-         .sidebar-item:hover i {
-             /* Keep original icon color on hover/active unless specified */
-         }
+        .sidebar-item.active i,
+        .sidebar-item:hover i {
+             /* Icons retain their specific category colors on hover/active */
+        }
 
-        /* Custom scrollbar */
+        /* Custom Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
-
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
-
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #cbd5e1; /* gray-300 */
             border-radius: 10px;
         }
-
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #94a3b8; /* gray-400 */
         }
 
-        /* Animation for AI cards */
+        /* Fade-in Animation for Cards */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
         }
 
-        /* Mobile Sidebar - Added */
+        /* Mobile Sidebar Styles */
         .mobile-sidebar {
             transform: translateX(-100%);
             transition: transform 0.3s ease-in-out;
@@ -135,16 +153,25 @@
         .mobile-sidebar.open {
             transform: translateX(0);
         }
+        /* Overlay for Mobile Sidebar */
         .sidebar-overlay {
             background-color: rgba(0, 0, 0, 0.5);
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
             pointer-events: none; /* Allow clicks through when hidden */
         }
-         .sidebar-overlay.open {
+        .sidebar-overlay.open {
             opacity: 1;
             pointer-events: auto; /* Block clicks when visible */
-         }
+        }
+
+        /* Utility for line clamping text (Tailwind plugin preferred) */
+        .line-clamp-3 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
 
     </style>
 </head>
@@ -158,13 +185,13 @@
                     <i class="fas fa-robot text-ai-600 text-2xl mr-2"></i>
                     <span class="text-xl font-semibold text-gray-900">AI Nexus</span>
                 </div>
-                 <button id="close-sidebar-btn" class="ml-auto md:hidden text-gray-500 hover:text-gray-700">
+                 <button id="close-sidebar-btn" class="ml-auto md:hidden text-gray-500 hover:text-gray-700 focus:outline-none" aria-label="Close sidebar">
                     <i class="fas fa-times text-xl"></i>
                  </button>
             </div>
             <div class="flex flex-col flex-grow overflow-y-auto">
                 <div class="px-4 py-4">
-                    <button id="new-ai-btn" class="w-full flex items-center justify-center px-4 py-2 bg-ai-600 text-white rounded-lg hover:bg-ai-700 transition duration-150">
+                    <button id="new-ai-btn" class="w-full flex items-center justify-center px-4 py-2 bg-ai-600 text-white rounded-lg hover:bg-ai-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500">
                         <i class="fas fa-plus mr-2"></i>
                         Add New AI
                     </button>
@@ -178,7 +205,7 @@
                         <i class="fas fa-border-all mr-3 text-gray-500"></i>
                         All Tools
                     </a>
-                     <a href="#" data-category="Website Generation" class="sidebar-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-gray-900">
+                    <a href="#" data-category="Website Generation" class="sidebar-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-gray-900">
                         <i class="fas fa-globe mr-3 text-ai-600"></i>
                         Website Generation
                     </a>
@@ -200,18 +227,18 @@
                     </a>
                 </nav>
 
-                <div class="px-4 py-4 border-t border-gray-200">
+                <div class="px-4 py-4 border-t border-gray-200 mt-auto">
                     <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Quick Filters
                     </div>
                     <div class="space-y-2">
                         <div class="flex items-center">
                             <input id="free-filter" type="checkbox" class="h-4 w-4 text-ai-600 focus:ring-ai-500 border-gray-300 rounded">
-                            <label for="free-filter" class="ml-2 text-sm text-gray-700">Free Tier Available</label>
+                            <label for="free-filter" class="ml-2 text-sm text-gray-700 cursor-pointer">Free Tier Available</label>
                         </div>
                         <div class="flex items-center">
                             <input id="api-filter" type="checkbox" class="h-4 w-4 text-ai-600 focus:ring-ai-500 border-gray-300 rounded">
-                            <label for="api-filter" class="ml-2 text-sm text-gray-700">API Access</label>
+                            <label for="api-filter" class="ml-2 text-sm text-gray-700 cursor-pointer">API Access</label>
                         </div>
                     </div>
                 </div>
@@ -221,44 +248,44 @@
         <div class="flex flex-col flex-1 overflow-hidden">
             <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 bg-white flex-shrink-0">
                 <div class="flex items-center">
-                     <button id="mobile-menu-btn" class="text-gray-500 hover:text-gray-600 focus:outline-none md:hidden mr-4">
+                     <button id="mobile-menu-btn" class="text-gray-500 hover:text-gray-600 focus:outline-none md:hidden mr-4" aria-label="Open sidebar">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                     <div class="relative flex-1 max-w-md">
                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                          </div>
-                         <input id="search-input" type="text" placeholder="Search your AIs..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-ai-500 focus:border-ai-500 sm:text-sm">
+                         <input id="search-input" type="search" placeholder="Search your AIs..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-ai-500 focus:border-ai-500 sm:text-sm">
                     </div>
                 </div>
 
                 <div class="ml-4 flex items-center md:ml-6">
-                    <button class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500">
+                    <button class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500" aria-label="Notifications">
                         <i class="fas fa-bell"></i>
                     </button>
 
                     <div class="ml-3 relative">
                         <div>
-                            <button class="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500">
-                                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                            <button class="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500" aria-label="User Menu">
+                                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User Profile">
                             </button>
                         </div>
-                    </div>
+                        </div>
                 </div>
             </div>
 
             <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50">
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                     <div>
                         <h1 id="main-title" class="text-2xl font-bold text-gray-900">All Tools</h1>
-                        <p id="main-subtitle" class="mt-1 text-sm text-gray-500">All your AI tools in one place</p>
+                        <p id="main-subtitle" class="mt-1 text-sm text-gray-500">Explore all AI tools</p>
                     </div>
-                    <div class="flex space-x-2">
-                        <button class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500">
+                    <div class="flex space-x-2 flex-shrink-0">
+                        <button class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500 disabled:opacity-50" disabled title="Sort (Not Implemented)">
                             <i class="fas fa-sliders-h mr-2 text-gray-500"></i>
                             Sort
                         </button>
-                        <button class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500">
+                        <button class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500 disabled:opacity-50" disabled title="Filter (Not Implemented)">
                             <i class="fas fa-filter mr-2 text-gray-500"></i>
                             Filter
                         </button>
@@ -291,7 +318,7 @@
                                 </div>
                                 <div class="ml-5 w-0 flex-1">
                                     <dt class="text-sm font-medium text-gray-500 truncate">
-                                        Categories
+                                        Categories Used
                                     </dt>
                                     <dd class="flex items-baseline">
                                         <div id="stats-categories" class="text-2xl font-semibold text-gray-900">0</div>
@@ -337,15 +364,15 @@
                 </div>
 
                 <div id="ai-cards-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    <div class="ai-card bg-white rounded-lg shadow border-2 border-dashed border-gray-300 hover:border-ai-400 transition duration-150 flex items-center justify-center min-h-[250px]">
-                        <button id="add-new-ai-card-btn" class="h-full w-full flex flex-col items-center justify-center p-6 text-center group">
+                    <div class="ai-card bg-white rounded-lg shadow border-2 border-dashed border-gray-300 hover:border-ai-400 transition duration-150 flex items-center justify-center min-h-[320px]">
+                        <button id="add-new-ai-card-btn" class="h-full w-full flex flex-col items-center justify-center p-6 text-center group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500 rounded-lg">
                             <i class="fas fa-plus-circle text-4xl text-gray-400 group-hover:text-ai-500 mb-3 transition-colors"></i>
                             <h3 class="text-lg font-medium text-gray-900">Add New AI</h3>
                             <p class="mt-1 text-sm text-gray-500">Click to add a new AI tool</p>
                         </button>
                     </div>
                 </div>
-                 <div id="no-results" class="hidden text-center py-10">
+                 <div id="no-results" class="hidden text-center py-10 mt-6">
                     <i class="fas fa-search text-4xl text-gray-400 mb-3"></i>
                     <p class="text-lg text-gray-600">No AI tools match your current filters.</p>
                     <p class="text-sm text-gray-500">Try adjusting your search or filters.</p>
@@ -354,7 +381,7 @@
         </div>
     </div>
 
-    <div id="ai-modal" class="hidden fixed inset-0 overflow-y-auto z-50">
+    <div id="ai-modal" class="hidden fixed inset-0 overflow-y-auto z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -363,80 +390,80 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
             <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <form id="ai-form">
-                     <input type="hidden" id="ai-id"> <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <form id="ai-form" novalidate>
+                     <input type="hidden" id="ai-id">
+                    <div class="relative bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-200">
                         <div class="sm:flex sm:items-start">
                             <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-ai-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <i class="fas fa-robot text-ai-600"></i>
+                                <i class="fas fa-robot text-ai-600 text-xl"></i>
                             </div>
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                 <h3 id="modal-title" class="text-lg leading-6 font-medium text-gray-900">Add New AI Tool</h3>
-                                <div class="mt-4 space-y-4">
-                                    <div>
-                                        <label for="ai-name" class="block text-sm font-medium text-gray-700">AI Name <span class="text-red-500">*</span></label>
-                                        <input type="text" id="ai-name" required class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    </div>
-
-                                    <div>
-                                        <label for="ai-provider" class="block text-sm font-medium text-gray-700">Provider</label>
-                                        <input type="text" id="ai-provider" class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    </div>
-
-                                    <div>
-                                        <label for="ai-description" class="block text-sm font-medium text-gray-700">Description <span class="text-red-500">*</span></label>
-                                        <textarea id="ai-description" rows="3" required class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
-                                    </div>
-
-                                    <div>
-                                        <label for="ai-categories" class="block text-sm font-medium text-gray-700">Categories <span class="text-red-500">*</span></label>
-                                        <select id="ai-categories" multiple required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-ai-500 focus:border-ai-500 sm:text-sm rounded-md h-24">
-                                            </select>
-                                         <p class="mt-1 text-xs text-gray-500">Hold Ctrl/Cmd to select multiple.</p>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label for="ai-url" class="block text-sm font-medium text-gray-700">Website URL <span class="text-red-500">*</span></label>
-                                            <input type="url" id="ai-url" required placeholder="https://example.com" class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                <p class="text-sm text-gray-500">Fill in the details for the AI tool.</p>
+                            </div>
+                        </div>
+                        <button type="button" id="close-modal-btn-x" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Close modal">
+                             <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[60vh] overflow-y-auto">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="ai-name" class="block text-sm font-medium text-gray-700">AI Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="ai-name" required class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label for="ai-provider" class="block text-sm font-medium text-gray-700">Provider</label>
+                                <input type="text" id="ai-provider" class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label for="ai-description" class="block text-sm font-medium text-gray-700">Description <span class="text-red-500">*</span></label>
+                                <textarea id="ai-description" rows="3" required class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                            </div>
+                            <div>
+                                <label for="ai-categories" class="block text-sm font-medium text-gray-700">Categories <span class="text-red-500">*</span></label>
+                                <select id="ai-categories" multiple required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-ai-500 focus:border-ai-500 sm:text-sm rounded-md h-24">
+                                    </select>
+                                <p class="mt-1 text-xs text-gray-500">Hold Ctrl/Cmd to select multiple.</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="ai-url" class="block text-sm font-medium text-gray-700">Website URL <span class="text-red-500">*</span></label>
+                                    <input type="url" id="ai-url" required placeholder="https://example.com" class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                                <div>
+                                    <label for="ai-logo" class="block text-sm font-medium text-gray-700">Logo URL</label>
+                                    <input type="url" id="ai-logo" placeholder="https://logo.clearbit.com/..." class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                    <p class="mt-1 text-xs text-gray-500">Optional. Try clearbit.com.</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div>
+                                    <span class="block text-sm font-medium text-gray-700">Pricing</span>
+                                    <div class="mt-2 space-y-2">
+                                        <div class="flex items-center">
+                                            <input id="ai-free-tier" name="pricing" type="checkbox" class="focus:ring-ai-500 h-4 w-4 text-ai-600 border-gray-300 rounded">
+                                            <label for="ai-free-tier" class="ml-2 block text-sm text-gray-700 cursor-pointer">Free Tier Available</label>
                                         </div>
-
-                                        <div>
-                                            <label for="ai-logo" class="block text-sm font-medium text-gray-700">Logo URL</label>
-                                            <input type="url" id="ai-logo" placeholder="https://logo.clearbit.com/..." class="mt-1 focus:ring-ai-500 focus:border-ai-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                            <p class="mt-1 text-xs text-gray-500">Optional. Use e.g., clearbit.</p>
-                                        </div>
                                     </div>
-
-                                    <div class="grid grid-cols-2 gap-4 pt-2">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700">Pricing</label>
-                                            <div class="mt-1 space-y-2">
-                                                <div class="flex items-center">
-                                                    <input id="ai-free-tier" name="pricing" type="checkbox" class="focus:ring-ai-500 h-4 w-4 text-ai-600 border-gray-300 rounded">
-                                                    <label for="ai-free-tier" class="ml-2 block text-sm text-gray-700">Free Tier Available</label>
-                                                </div>
-                                                </div>
-                                        </div>
-
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700">Features</label>
-                                            <div class="mt-1 space-y-2">
-                                                <div class="flex items-center">
-                                                    <input id="ai-api" name="features" type="checkbox" class="focus:ring-ai-500 h-4 w-4 text-ai-600 border-gray-300 rounded">
-                                                    <label for="ai-api" class="ml-2 block text-sm text-gray-700">API Access</label>
-                                                </div>
-                                                </div>
+                                </div>
+                                <div>
+                                    <span class="block text-sm font-medium text-gray-700">Features</span>
+                                    <div class="mt-2 space-y-2">
+                                        <div class="flex items-center">
+                                            <input id="ai-api" name="features" type="checkbox" class="focus:ring-ai-500 h-4 w-4 text-ai-600 border-gray-300 rounded">
+                                            <label for="ai-api" class="ml-2 block text-sm text-gray-700 cursor-pointer">API Access</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-200">
                         <button type="submit" id="modal-submit-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-ai-600 text-base font-medium text-white hover:bg-ai-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500 sm:ml-3 sm:w-auto sm:text-sm">
                              Add AI
                         </button>
-                        <button type="button" id="cancel-ai-modal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        <button type="button" id="cancel-ai-modal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Cancel
                         </button>
                     </div>
@@ -447,23 +474,19 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Data ---
+            // --- Data Definitions & State ---
+
             const categoryDefinitions = [
-                { name: 'Website Generation', icon: 'fa-globe', color: 'ai', textColor: 'ai-800', bgColor: 'ai-100', sidebarColor: 'text-ai-600' },
-                { name: 'Content Creation', icon: 'fa-pen-fancy', color: 'purple', textColor: 'purple-800', bgColor: 'purple-100', sidebarColor: 'text-purple-500' },
-                { name: 'Image Generation', icon: 'fa-image', color: 'green', textColor: 'green-800', bgColor: 'green-100', sidebarColor: 'text-green-500' },
-                { name: 'Code Assistance', icon: 'fa-code', color: 'yellow', textColor: 'yellow-800', bgColor: 'yellow-100', sidebarColor: 'text-yellow-500' },
-                { name: 'Data Analysis', icon: 'fa-chart-line', color: 'red', textColor: 'red-800', bgColor: 'red-100', sidebarColor: 'text-red-500' }
+                { name: 'Website Generation', icon: 'fa-globe', color: 'ai', textColor: 'text-ai-800', bgColor: 'bg-ai-100', sidebarColor: 'text-ai-600' },
+                { name: 'Content Creation', icon: 'fa-pen-fancy', color: 'purple', textColor: 'text-purple-800', bgColor: 'bg-purple-100', sidebarColor: 'text-purple-500' },
+                { name: 'Image Generation', icon: 'fa-image', color: 'green', textColor: 'text-green-800', bgColor: 'bg-green-100', sidebarColor: 'text-green-500' },
+                { name: 'Code Assistance', icon: 'fa-code', color: 'yellow', textColor: 'text-yellow-800', bgColor: 'bg-yellow-100', sidebarColor: 'text-yellow-500' },
+                { name: 'Data Analysis', icon: 'fa-chart-line', color: 'red', textColor: 'text-red-800', bgColor: 'bg-red-100', sidebarColor: 'text-red-500' }
             ];
 
-            let aiData = [
-                { id: 1, name: 'Gemini', provider: 'Google AI', description: 'Advanced website generation with natural language processing and automated design suggestions.', categories: ['Website Generation', 'Content Creation'], url: 'https://gemini.google.com/', logo: 'https://logo.clearbit.com/gemini.google.com', hasFreeTier: true, hasApi: true, dateAdded: '2025-02-04', isFavorite: false },
-                { id: 2, name: 'ChatGPT', provider: 'OpenAI', description: 'Versatile AI that can generate website content, code snippets, and design suggestions.', categories: ['Website Generation', 'Content Creation', 'Code Assistance'], url: 'https://chat.openai.com/', logo: 'https://logo.clearbit.com/openai.com', hasFreeTier: true, hasApi: true, dateAdded: '2025-03-04', isFavorite: true },
-                { id: 3, name: 'Claude', provider: 'Anthropic', description: 'AI assistant focused on helpful, harmless, and honest website content generation.', categories: ['Website Generation', 'Content Creation'], url: 'https://claude.ai/', logo: 'https://logo.clearbit.com/claude.ai', hasFreeTier: true, hasApi: true, dateAdded: '2025-03-15', isFavorite: false },
-                { id: 4, name: 'Midjourney', provider: 'Midjourney Inc.', description: 'AI image generation for website visuals, banners, and design elements.', categories: ['Image Generation', 'Website Generation'], url: 'https://www.midjourney.com/', logo: 'https://logo.clearbit.com/midjourney.com', hasFreeTier: false, hasApi: false, dateAdded: '2025-03-20', isFavorite: false },
-                { id: 5, name: 'GitHub Copilot', provider: 'GitHub', description: 'AI pair programmer that helps with website development and coding.', categories: ['Code Assistance', 'Website Generation'], url: 'https://github.com/features/copilot', logo: 'https://logo.clearbit.com/github.com', hasFreeTier: false, hasApi: false, dateAdded: '2025-03-01', isFavorite: true },
-            ];
-            let nextId = 6; // To assign unique IDs to new entries
+            let aiData = []; // Initialize empty, will be filled by loadData
+            let nextId = 1; // Start ID counter
+
             let currentFilter = {
                 category: 'All',
                 searchTerm: '',
@@ -471,7 +494,7 @@
                 apiAccess: false
             };
 
-            // --- DOM Elements ---
+            // --- DOM Element References ---
             const aiCardsGrid = document.getElementById('ai-cards-grid');
             const categoryNav = document.getElementById('category-nav');
             const searchInput = document.getElementById('search-input');
@@ -488,6 +511,7 @@
             const modalSubmitBtn = document.getElementById('modal-submit-btn');
             const aiForm = document.getElementById('ai-form');
             const cancelModalBtn = document.getElementById('cancel-ai-modal');
+            const closeModalXBtn = document.getElementById('close-modal-btn-x');
             const newAiBtn = document.getElementById('new-ai-btn');
             const addNewAiCardBtn = document.getElementById('add-new-ai-card-btn');
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -505,87 +529,145 @@
             const modalAiFreeTier = document.getElementById('ai-free-tier');
             const modalAiApi = document.getElementById('ai-api');
 
+            // --- Core Functions ---
 
-            // --- Functions ---
+            function loadData() {
+                const storedData = localStorage.getItem('aiNexusData');
+                const storedNextId = localStorage.getItem('aiNexusNextId');
+                 let initialData = [ // Define default data here
+                     { id: 1, name: 'Gemini', provider: 'Google AI', description: 'Advanced website generation with natural language processing and automated design suggestions. Handles complex queries.', categories: ['Website Generation', 'Content Creation'], url: 'https://gemini.google.com/', logo: 'https://logo.clearbit.com/gemini.google.com', hasFreeTier: true, hasApi: true, dateAdded: '2025-02-04', isFavorite: false },
+                     { id: 2, name: 'ChatGPT', provider: 'OpenAI', description: 'Versatile AI that can generate website content, code snippets, and design suggestions. Strong conversational abilities.', categories: ['Website Generation', 'Content Creation', 'Code Assistance'], url: 'https://chat.openai.com/', logo: 'https://logo.clearbit.com/openai.com', hasFreeTier: true, hasApi: true, dateAdded: '2025-03-04', isFavorite: true },
+                     { id: 3, name: 'Claude', provider: 'Anthropic', description: 'AI assistant focused on helpful, harmless, and honest website content generation. Known for longer context windows.', categories: ['Website Generation', 'Content Creation'], url: 'https://claude.ai/', logo: 'https://logo.clearbit.com/claude.ai', hasFreeTier: true, hasApi: true, dateAdded: '2025-03-15', isFavorite: false },
+                     { id: 4, name: 'Midjourney', provider: 'Midjourney Inc.', description: 'AI image generation for website visuals, banners, and design elements. Produces artistic and stylized images.', categories: ['Image Generation'], url: 'https://www.midjourney.com/', logo: 'https://logo.clearbit.com/midjourney.com', hasFreeTier: false, hasApi: false, dateAdded: '2025-03-20', isFavorite: false },
+                     { id: 5, name: 'GitHub Copilot', provider: 'GitHub', description: 'AI pair programmer that helps with website development and coding directly in the editor.', categories: ['Code Assistance'], url: 'https://github.com/features/copilot', logo: 'https://logo.clearbit.com/github.com', hasFreeTier: false, hasApi: false, dateAdded: '2025-03-01', isFavorite: true },
+                 ];
 
-            // Get category styling info
+                if (storedData) {
+                    try {
+                         aiData = JSON.parse(storedData);
+                         // Basic validation: check if it's an array
+                         if (!Array.isArray(aiData)) {
+                              console.warn("Stored data is not an array, using default data.");
+                              aiData = initialData;
+                         } else {
+                             console.log("Loaded data from localStorage");
+                         }
+                    } catch(e) {
+                         console.error("Failed to parse data from localStorage:", e);
+                         aiData = initialData; // Use default if parsing fails
+                    }
+                } else {
+                     // No stored data, use initial default data
+                     aiData = initialData;
+                     console.log("No data in localStorage, using default data.");
+                }
+
+                // Ensure nextId is at least one greater than the max existing ID
+                 const maxId = aiData.reduce((max, item) => Math.max(max, item.id || 0), 0);
+                 nextId = Math.max(maxId + 1, parseInt(storedNextId, 10) || 1);
+            }
+
+            function saveData() {
+                 try {
+                    localStorage.setItem('aiNexusData', JSON.stringify(aiData));
+                    localStorage.setItem('aiNexusNextId', nextId.toString());
+                    // console.log("Saved data to localStorage"); // Optional: Reduce console noise
+                 } catch (e) {
+                     console.error("Failed to save data to localStorage:", e);
+                     alert("Could not save data. LocalStorage might be full or disabled.");
+                 }
+            }
+
             function getCategoryStyle(categoryName) {
-                return categoryDefinitions.find(c => c.name === categoryName) || { name: 'Other', icon: 'fa-question-circle', color: 'gray', textColor: 'gray-800', bgColor: 'gray-100', sidebarColor: 'text-gray-500' };
+                return categoryDefinitions.find(c => c.name === categoryName) ||
+                       { name: 'Other', icon: 'fa-question-circle', color: 'gray', textColor: 'text-gray-800', bgColor: 'bg-gray-100', sidebarColor: 'text-gray-500' };
             }
 
-            // Format date difference
             function timeAgo(dateString) {
-                const date = new Date(dateString);
-                const now = new Date();
-                const seconds = Math.floor((now - date) / 1000);
-                let interval = Math.floor(seconds / 31536000);
-                if (interval > 1) return interval + "yrs ago";
-                if (interval === 1) return "1yr ago";
-                interval = Math.floor(seconds / 2592000);
-                if (interval > 1) return interval + "mo ago";
-                if (interval === 1) return "1mo ago";
-                interval = Math.floor(seconds / 604800);
-                 if (interval > 1) return interval + "w ago";
-                 if (interval === 1) return "1w ago";
-                interval = Math.floor(seconds / 86400);
-                if (interval > 1) return interval + "d ago";
-                 if (interval === 1) return "1d ago";
-                interval = Math.floor(seconds / 3600);
-                 if (interval > 1) return interval + "h ago";
-                 if (interval === 1) return "1h ago";
-                interval = Math.floor(seconds / 60);
-                 if (interval > 1) return interval + "m ago";
-                 if (interval === 1) return "1m ago";
-                return "just now";
+                if (!dateString) return 'date unknown';
+                try {
+                    const date = new Date(dateString);
+                     if (isNaN(date)) return 'invalid date';
+
+                    const now = new Date();
+                    const seconds = Math.floor((now - date) / 1000);
+                    if (seconds < 5) return "just now";
+                    if (seconds < 60) return `${seconds}s ago`;
+
+                    const minutes = Math.floor(seconds / 60);
+                    if (minutes < 60) return `${minutes}m ago`;
+
+                    const hours = Math.floor(minutes / 60);
+                    if (hours < 24) return `${hours}h ago`;
+
+                    const days = Math.floor(hours / 24);
+                    if (days < 7) return `${days}d ago`;
+
+                    const weeks = Math.floor(days / 7);
+                    if (weeks < 5) return `${weeks}w ago`;
+
+                    const months = Math.floor(days / 30.44);
+                    if (months < 12) return `${months}mo ago`;
+
+                    const years = Math.floor(days / 365.25);
+                    return `${years}yr${years > 1 ? 's' : ''} ago`;
+
+                } catch (e) {
+                    console.error("Error parsing date:", dateString, e);
+                    return 'date error';
+                }
             }
 
-            // Generate HTML for a single AI card
+            // Generate HTML for a single AI card - CORRECTED (No JSX comments)
             function createAICardHTML(ai) {
-                const logoUrl = ai.logo || 'https://via.placeholder.com/32/E0F2FE/0284C7?text=AI'; // Default placeholder
-                const placeholderLogoBg = ai.logo ? getCategoryStyle(ai.categories[0]).bgColor : 'ai-100'; // Background based on first category or default
+                const firstCategoryStyle = getCategoryStyle(ai.categories[0] || 'Other');
+                const defaultLogoText = ai.name.substring(0, 2).toUpperCase();
+                const logoUrl = ai.logo || `https://via.placeholder.com/32/${firstCategoryStyle.bgColor.substring(3)}-100/${firstCategoryStyle.color}-600?text=${defaultLogoText}`;
 
                 const categoryChipsHTML = ai.categories.map(catName => {
                     const style = getCategoryStyle(catName);
-                    return `<span class="category-chip inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${style.bgColor} text-${style.textColor}">
+                    return `<span class="category-chip inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${style.bgColor} ${style.textColor}">
                                 ${catName}
                             </span>`;
-                }).join('');
+                }).join(' ');
 
                 return `
-                    <div class="ai-card bg-white rounded-lg shadow flex flex-col" data-id="${ai.id}">
-                        <div class="p-5 flex-grow">
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 bg-${placeholderLogoBg} p-2 rounded-lg">
-                                        <img src="${logoUrl}" alt="${ai.name} Logo" class="h-8 w-8 object-contain" onerror="this.src='https://via.placeholder.com/32/E0F2FE/0284C7?text=AI'; this.onerror=null;">
+                    <div class="ai-card bg-white rounded-lg shadow flex flex-col h-full" data-id="${ai.id}">
+                        <div class="p-5 flex-grow flex flex-col">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-center min-w-0">
+                                    <div class="flex-shrink-0 bg-${firstCategoryStyle.bgColor} p-2 rounded-lg flex items-center justify-center h-10 w-10">
+                                        <img src="${logoUrl}" alt="${ai.name} Logo" class="h-full w-full object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/32/E0F2FE/0284C7?text=${defaultLogoText}';">
                                     </div>
-                                    <div class="ml-3">
-                                        <h3 class="text-lg font-medium text-gray-900">${ai.name}</h3>
-                                        <p class="text-sm text-gray-500">${ai.provider || 'Unknown Provider'}</p>
+                                    <div class="ml-3 min-w-0">
+                                        <h3 class="text-lg font-medium text-gray-900 truncate" title="${ai.name}">${ai.name}</h3>
+                                        <p class="text-sm text-gray-500 truncate" title="${ai.provider || ''}">${ai.provider || 'Unknown Provider'}</p>
                                     </div>
                                 </div>
-                                <button class="favorite-btn text-gray-400 hover:text-yellow-500 focus:outline-none" title="Toggle Favorite">
-                                    <i class="${ai.isFavorite ? 'fas fa-star text-yellow-400' : 'far fa-star'}"></i>
+                                <button class="favorite-btn text-gray-400 hover:text-yellow-500 focus:outline-none flex-shrink-0 ml-2" title="Toggle Favorite" aria-label="Toggle Favorite">
+                                    <i class="${ai.isFavorite ? 'fas fa-star text-yellow-400' : 'far fa-star'} text-lg"></i>
                                 </button>
                             </div>
 
-                            <div class="mt-4">
-                                <p class="text-sm text-gray-600 min-h-[40px]">${ai.description}</p> </div>
-
-                            <div class="mt-4 flex flex-wrap gap-2 min-h-[28px]"> ${categoryChipsHTML}
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-600 line-clamp-3" title="${ai.description}">${ai.description}</p>
                             </div>
 
-                            <div class="mt-4 pt-4 border-t border-gray-200">
+                            <div class="mb-4 flex flex-wrap gap-2 min-h-[28px]">
+                                ${categoryChipsHTML || '<span class="text-xs text-gray-400 italic">No categories</span>'}
+                            </div>
+
+                            <div class="mt-auto pt-4 border-t border-gray-200">
                                 <div class="flex items-center justify-between text-xs text-gray-500">
-                                    <div class="flex items-center ${ai.hasApi ? '' : 'opacity-50'}" title="${ai.hasApi ? 'API Available' : 'No API'}">
-                                        <i class="fas fa-plug mr-1 ${ai.hasApi ? 'text-green-500' : 'text-gray-400'}"></i>
+                                    <div class="flex items-center ${ai.hasApi ? 'text-green-600' : 'text-gray-400 opacity-60'}" title="${ai.hasApi ? 'API Available' : 'No API Access'}">
+                                        <i class="fas fa-plug mr-1"></i>
                                         <span>API</span>
                                     </div>
-                                    <div class="flex items-center ${ai.hasFreeTier ? '' : 'opacity-50'}" title="${ai.hasFreeTier ? 'Free Tier Available' : 'Paid Only'}">
-                                        <i class="fas fa-dollar-sign mr-1 ${ai.hasFreeTier ? 'text-green-500' : 'text-gray-400'}"></i>
-                                        <span>${ai.hasFreeTier ? 'Free Tier' : 'Paid'}</span>
+                                    <div class="flex items-center ${ai.hasFreeTier ? 'text-green-600' : 'text-gray-400 opacity-60'}" title="${ai.hasFreeTier ? 'Free Tier Available' : 'Paid Only'}">
+                                        <i class="fas fa-dollar-sign mr-1"></i>
+                                        <span>${ai.hasFreeTier ? 'Free' : 'Paid'}</span>
                                     </div>
-                                    <div class="flex items-center" title="Added ${new Date(ai.dateAdded).toLocaleDateString()}">
+                                    <div class="flex items-center" title="Added on ${new Date(ai.dateAdded).toLocaleDateString()}">
                                         <i class="fas fa-calendar-alt text-gray-400 mr-1"></i>
                                         <span>${timeAgo(ai.dateAdded)}</span>
                                     </div>
@@ -593,15 +675,15 @@
                             </div>
                         </div>
 
-                        <div class="bg-gray-50 px-5 py-3 rounded-b-lg flex justify-between items-center">
-                            <a href="${ai.url}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-ai-600 hover:text-ai-500" title="Visit ${ai.name} Website">
+                        <div class="bg-gray-50 px-5 py-3 rounded-b-lg flex justify-between items-center flex-shrink-0">
+                            <a href="${ai.url}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-ai-600 hover:text-ai-500 inline-flex items-center" title="Visit ${ai.name} Website">
                                 <i class="fas fa-external-link-alt mr-1"></i> Visit
                             </a>
                             <div class="flex space-x-3">
-                                <button class="edit-btn text-gray-400 hover:text-blue-500 focus:outline-none" title="Edit">
+                                <button class="edit-btn text-gray-400 hover:text-blue-500 focus:outline-none" title="Edit ${ai.name}" aria-label="Edit ${ai.name}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="delete-btn text-gray-400 hover:text-red-500 focus:outline-none" title="Delete">
+                                <button class="delete-btn text-gray-400 hover:text-red-500 focus:outline-none" title="Delete ${ai.name}" aria-label="Delete ${ai.name}">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
@@ -610,183 +692,165 @@
                 `;
             }
 
-            // Render AI cards based on filtered data
             function renderAICards(filteredAIs) {
-                // Clear previous cards (excluding the static 'add new' button)
-                aiCardsGrid.querySelectorAll('.ai-card:not(:last-child)').forEach(card => card.remove());
-
-                const addNewCardPlaceholder = aiCardsGrid.querySelector('.ai-card:last-child'); // Keep reference
+                const cardsToRemove = aiCardsGrid.querySelectorAll('.ai-card:not(:last-child)');
+                cardsToRemove.forEach(card => card.remove());
+                const addNewCardPlaceholder = aiCardsGrid.querySelector('.ai-card:last-child');
+                if (!addNewCardPlaceholder) { console.error("Add New AI Card Placeholder not found!"); return; }
 
                 if (filteredAIs.length === 0) {
                     noResultsDiv.classList.remove('hidden');
+                    addNewCardPlaceholder.classList.remove('hidden');
                 } else {
                     noResultsDiv.classList.add('hidden');
+                    addNewCardPlaceholder.classList.remove('hidden');
                     filteredAIs.forEach((ai, index) => {
                         const cardHTML = createAICardHTML(ai);
-                        const cardElement = document.createElement('div');
-                        cardElement.innerHTML = cardHTML.trim(); // Create element from string
-                        const actualCard = cardElement.firstChild; // Get the actual card div
-                        actualCard.style.animationDelay = `${index * 0.05}s`; // Stagger animation
-                        actualCard.classList.add('animate-fade-in');
-                        aiCardsGrid.insertBefore(actualCard, addNewCardPlaceholder); // Insert before the placeholder
-
-                        // Add event listeners to the new card's buttons
-                        actualCard.querySelector('.favorite-btn').addEventListener('click', () => toggleFavorite(ai.id));
-                        actualCard.querySelector('.delete-btn').addEventListener('click', () => deleteAI(ai.id));
-                        actualCard.querySelector('.edit-btn').addEventListener('click', () => openEditModal(ai.id));
-                        // Add copy link listener if needed
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = cardHTML.trim();
+                        const cardElement = tempDiv.firstChild;
+                        if (cardElement) {
+                            cardElement.style.animationDelay = `${index * 0.05}s`;
+                            cardElement.classList.add('animate-fade-in');
+                            aiCardsGrid.insertBefore(cardElement, addNewCardPlaceholder);
+                            cardElement.querySelector('.favorite-btn')?.addEventListener('click', () => toggleFavorite(ai.id));
+                            cardElement.querySelector('.delete-btn')?.addEventListener('click', () => deleteAI(ai.id));
+                            cardElement.querySelector('.edit-btn')?.addEventListener('click', () => openEditModal(ai.id));
+                        } else { console.error("Failed to create card element for:", ai); }
                     });
                 }
             }
 
-            // Update the statistics cards
             function updateStats() {
                 statsTotal.textContent = aiData.length;
-                statsCategories.textContent = categoryDefinitions.length; // Using defined categories count
+                const uniqueCategories = new Set(aiData.flatMap(ai => ai.categories));
+                statsCategories.textContent = uniqueCategories.size;
                 statsApi.textContent = aiData.filter(ai => ai.hasApi).length;
                 statsFavorites.textContent = aiData.filter(ai => ai.isFavorite).length;
             }
 
-             // Update the main title and subtitle
             function updateMainTitle(categoryName) {
+                 const count = aiData.length; // Total count for general subtitle
+                 const filteredCount = aiData.filter(ai => categoryName === 'All' || ai.categories.includes(categoryName)).length; // Count for specific category
+
                 if (categoryName === 'All') {
                     mainTitle.textContent = 'All Tools';
-                    mainSubtitle.textContent = 'All your AI tools in one place';
+                    mainSubtitle.textContent = `Explore all ${count} AI tool${count !== 1 ? 's' : ''}`;
                 } else {
                     const categoryInfo = getCategoryStyle(categoryName);
                     mainTitle.textContent = `${categoryName} AIs`;
-                    mainSubtitle.textContent = `Your AI tools for ${categoryName.toLowerCase()}`;
+                    mainSubtitle.textContent = `Found ${filteredCount} AI tool${filteredCount !== 1 ? 's' : ''} for ${categoryName.toLowerCase()}`;
                 }
             }
 
-            // Highlight active category in sidebar
             function updateSidebarActiveCategory() {
                 document.querySelectorAll('#category-nav .sidebar-item').forEach(item => {
-                    item.classList.remove('active', 'bg-ai-50', 'text-gray-900');
-                     item.classList.add('text-gray-700'); // Reset text color
+                    item.classList.remove('active', 'bg-ai-50', 'text-gray-900', 'font-medium');
+                    item.classList.add('text-gray-700');
                     if (item.dataset.category === currentFilter.category) {
-                        item.classList.add('active', 'bg-ai-50', 'text-gray-900');
+                        item.classList.add('active', 'bg-ai-50', 'text-gray-900', 'font-medium');
                         item.classList.remove('text-gray-700');
                     }
                 });
             }
 
-            // Apply all filters and re-render
             function applyFiltersAndRender() {
-                let filtered = aiData;
-
-                // Filter by Category
+                // console.time("Filtering and Rendering");
+                let filtered = [...aiData];
                 if (currentFilter.category !== 'All') {
                     filtered = filtered.filter(ai => ai.categories.includes(currentFilter.category));
                 }
-
-                // Filter by Search Term
                 const searchTerm = currentFilter.searchTerm.toLowerCase().trim();
                 if (searchTerm) {
                     filtered = filtered.filter(ai =>
                         ai.name.toLowerCase().includes(searchTerm) ||
-                        ai.provider.toLowerCase().includes(searchTerm) ||
+                        (ai.provider && ai.provider.toLowerCase().includes(searchTerm)) ||
                         ai.description.toLowerCase().includes(searchTerm) ||
                         ai.categories.some(cat => cat.toLowerCase().includes(searchTerm))
                     );
                 }
-
-                // Filter by Quick Filters
                 if (currentFilter.freeTier) {
                     filtered = filtered.filter(ai => ai.hasFreeTier);
                 }
                 if (currentFilter.apiAccess) {
                     filtered = filtered.filter(ai => ai.hasApi);
                 }
-
                 renderAICards(filtered);
-                updateStats(); // Update stats based on the *full* dataset
-                updateMainTitle(currentFilter.category);
+                updateStats();
+                updateMainTitle(currentFilter.category); // Pass current filter for accurate subtitle
                 updateSidebarActiveCategory();
+                // console.timeEnd("Filtering and Rendering");
             }
 
-            // Toggle favorite status
             function toggleFavorite(id) {
                 const aiIndex = aiData.findIndex(ai => ai.id === id);
                 if (aiIndex > -1) {
                     aiData[aiIndex].isFavorite = !aiData[aiIndex].isFavorite;
-                    // Could add persistence here (e.g., localStorage)
-                    applyFiltersAndRender(); // Re-render to update star and stats
-                }
-            }
-
-            // Delete AI
-            function deleteAI(id) {
-                const aiToDelete = aiData.find(ai => ai.id === id);
-                if (!aiToDelete) return;
-
-                if (confirm(`Are you sure you want to delete "${aiToDelete.name}"? This cannot be undone.`)) {
-                    aiData = aiData.filter(ai => ai.id !== id);
-                    // Could add persistence here (e.g., localStorage)
+                    saveData();
                     applyFiltersAndRender();
                 }
             }
 
-            // Populate and open the modal for adding/editing
-            function openModal(mode = 'add', aiToEdit = null) {
-                aiForm.reset(); // Clear previous form data
-                modalAiId.value = ''; // Clear ID field
+            function deleteAI(id) {
+                const aiToDelete = aiData.find(ai => ai.id === id);
+                if (!aiToDelete) return;
+                if (confirm(`Are you sure you want to permanently delete "${aiToDelete.name}"?`)) {
+                    aiData = aiData.filter(ai => ai.id !== id);
+                    saveData();
+                    applyFiltersAndRender();
+                }
+            }
 
-                 // Populate category select options
+            function openModal(mode = 'add', aiToEdit = null) {
+                aiForm.reset();
+                modalAiId.value = '';
                  modalAiCategories.innerHTML = categoryDefinitions
                     .map(cat => `<option value="${cat.name}">${cat.name}</option>`)
                     .join('');
-
                 if (mode === 'edit' && aiToEdit) {
                     modalTitle.textContent = 'Edit AI Tool';
                     modalSubmitBtn.textContent = 'Save Changes';
                     modalAiId.value = aiToEdit.id;
                     modalAiName.value = aiToEdit.name;
-                    modalAiProvider.value = aiToEdit.provider;
+                    modalAiProvider.value = aiToEdit.provider || '';
                     modalAiDescription.value = aiToEdit.description;
                     modalAiUrl.value = aiToEdit.url;
                     modalAiLogo.value = aiToEdit.logo || '';
                     modalAiFreeTier.checked = aiToEdit.hasFreeTier;
                     modalAiApi.checked = aiToEdit.hasApi;
-
-                    // Select multiple categories
                      Array.from(modalAiCategories.options).forEach(option => {
-                        if (aiToEdit.categories.includes(option.value)) {
-                            option.selected = true;
-                        }
+                        option.selected = aiToEdit.categories.includes(option.value);
                      });
-
                 } else {
                     modalTitle.textContent = 'Add New AI Tool';
                     modalSubmitBtn.textContent = 'Add AI';
+                     modalAiFreeTier.checked = false;
+                     modalAiApi.checked = false;
                 }
                 modal.classList.remove('hidden');
+                modalAiName.focus();
             }
 
-            function openAddModal() {
-                 openModal('add');
-            }
-
+            function openAddModal() { openModal('add'); }
             function openEditModal(id) {
                 const aiToEdit = aiData.find(ai => ai.id === id);
-                if(aiToEdit) {
-                    openModal('edit', aiToEdit);
-                }
+                if(aiToEdit) { openModal('edit', aiToEdit); }
+                else { console.error("Could not find AI with ID:", id, "to edit."); alert("Error: Could not find the AI tool to edit."); }
             }
 
-
-            // Close the modal
             function closeModal() {
                 modal.classList.add('hidden');
-                aiForm.reset(); // Ensure form is cleared on close
-                modalAiId.value = ''; // Clear hidden ID
+                aiForm.reset();
+                modalAiId.value = '';
             }
 
-            // Handle form submission (Add/Edit)
             function handleFormSubmit(event) {
                 event.preventDefault();
-
-                const id = parseInt(modalAiId.value); // Get ID for editing, NaN if adding
+                if (!aiForm.checkValidity()) {
+                     alert('Please fill in all required fields correctly.');
+                    return;
+                }
+                const id = parseInt(modalAiId.value, 10);
                 const name = modalAiName.value.trim();
                 const provider = modalAiProvider.value.trim();
                 const description = modalAiDescription.value.trim();
@@ -794,119 +858,88 @@
                 const logo = modalAiLogo.value.trim();
                 const hasFreeTier = modalAiFreeTier.checked;
                 const hasApi = modalAiApi.checked;
-                const selectedCategories = Array.from(modalAiCategories.selectedOptions).map(option => option.value);
+                const selectedCategories = Array.from(modalAiCategories.selectedOptions)
+                                           .map(option => option.value)
+                                           .filter(value => value);
+                const aiEntry = { name, provider, description, categories: selectedCategories, url, logo, hasFreeTier, hasApi, dateAdded: new Date().toISOString().split('T')[0], isFavorite: false };
 
-                if (!name || !description || !url || selectedCategories.length === 0) {
-                    alert('Please fill in all required fields (Name, Description, URL, Categories).');
-                    return;
-                }
-
-                const aiEntry = {
-                    // id will be assigned below
-                    name,
-                    provider,
-                    description,
-                    categories: selectedCategories,
-                    url,
-                    logo,
-                    hasFreeTier,
-                    hasApi,
-                    dateAdded: new Date().toISOString().split('T')[0], // Today's date
-                    isFavorite: false // New items are not favorite by default
-                };
-
-                if (!isNaN(id)) { // Editing existing
+                if (!isNaN(id)) {
                      const index = aiData.findIndex(ai => ai.id === id);
                      if (index > -1) {
-                         aiEntry.id = id; // Keep original ID
-                         aiEntry.dateAdded = aiData[index].dateAdded; // Keep original date
-                         aiEntry.isFavorite = aiData[index].isFavorite; // Keep favorite status
+                         aiEntry.id = id;
+                         aiEntry.dateAdded = aiData[index].dateAdded;
+                         aiEntry.isFavorite = aiData[index].isFavorite;
                          aiData[index] = aiEntry;
                          console.log("Updated AI:", aiEntry);
-                     }
-                } else { // Adding new
+                     } else { console.error("Error: Tried to edit non-existent AI with ID:", id); alert("Error: Could not save changes. AI not found."); return; }
+                } else {
                     aiEntry.id = nextId++;
+                    aiEntry.isFavorite = false;
+                    aiEntry.dateAdded = new Date().toISOString().split('T')[0];
                     aiData.push(aiEntry);
                     console.log("Added new AI:", aiEntry);
                 }
-
-                // Could add persistence here
+                saveData();
                 closeModal();
                 applyFiltersAndRender();
             }
 
-             // Toggle Mobile Sidebar
             function toggleMobileSidebar() {
-                sidebar.classList.toggle('open');
-                sidebarOverlay.classList.toggle('open');
+                const isOpen = sidebar.classList.contains('open');
+                sidebar.classList.toggle('open', !isOpen);
+                sidebarOverlay.classList.toggle('open', !isOpen);
+                 if (!isOpen) { closeSidebarBtn.focus(); }
+                 else { mobileMenuBtn.focus(); }
             }
 
-
-            // --- Event Listeners ---
-
-            // Category Links
+            // --- Event Listener Setup ---
             categoryNav.addEventListener('click', (e) => {
-                if (e.target.closest('.sidebar-item')) {
+                const categoryLink = e.target.closest('.sidebar-item');
+                if (categoryLink) {
                     e.preventDefault();
-                    const categoryLink = e.target.closest('.sidebar-item');
                     currentFilter.category = categoryLink.dataset.category;
                     applyFiltersAndRender();
-                     if (sidebar.classList.contains('open')) { // Close sidebar on mobile after selection
-                         toggleMobileSidebar();
-                     }
+                     if (sidebar.classList.contains('open')) { toggleMobileSidebar(); }
                 }
             });
 
-            // Search Input (with debounce)
             let searchTimeout;
             searchInput.addEventListener('input', () => {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     currentFilter.searchTerm = searchInput.value;
                     applyFiltersAndRender();
-                }, 300); // Wait 300ms after user stops typing
+                }, 300);
             });
 
-            // Quick Filters
-            freeFilterCheckbox.addEventListener('change', () => {
-                currentFilter.freeTier = freeFilterCheckbox.checked;
-                applyFiltersAndRender();
-            });
-            apiFilterCheckbox.addEventListener('change', () => {
-                currentFilter.apiAccess = apiFilterCheckbox.checked;
-                applyFiltersAndRender();
-            });
+            freeFilterCheckbox.addEventListener('change', () => { currentFilter.freeTier = freeFilterCheckbox.checked; applyFiltersAndRender(); });
+            apiFilterCheckbox.addEventListener('change', () => { currentFilter.apiAccess = apiFilterCheckbox.checked; applyFiltersAndRender(); });
 
-            // Modal Triggers
             newAiBtn.addEventListener('click', openAddModal);
             addNewAiCardBtn.addEventListener('click', openAddModal);
             cancelModalBtn.addEventListener('click', closeModal);
-             // Close modal if clicking outside the form content
-             modal.addEventListener('click', (e) => {
-                 if (e.target === modal || e.target === modal.querySelector('.fixed.inset-0 > div')) {
-                     closeModal();
-                 }
-             });
-
-
-            // Form Submission
+            closeModalXBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) { closeModal(); } });
             aiForm.addEventListener('submit', handleFormSubmit);
 
-             // Mobile Menu
             mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
             closeSidebarBtn.addEventListener('click', toggleMobileSidebar);
             sidebarOverlay.addEventListener('click', toggleMobileSidebar);
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sidebar.classList.contains('open')) { toggleMobileSidebar(); } });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) { closeModal(); } }); // Close modal on Esc
 
 
             // --- Initialization ---
             function initializeApp() {
-                applyFiltersAndRender(); // Initial render
-                console.log("AI Nexus Initialized");
+                console.log("Initializing AI Nexus...");
+                loadData();
+                applyFiltersAndRender();
+                console.log("AI Nexus Initialized.");
             }
 
             initializeApp();
 
-        }); // End DOMContentLoaded
+        });
     </script>
 </body>
 </html>
